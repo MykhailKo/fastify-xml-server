@@ -1,0 +1,37 @@
+name: Release npm package
+on:
+  release:
+    types: [published]
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Clone code
+        uses: actions/checkout@v2
+      - name: Init Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: |
+          npm install -D
+          npm install -g copyfiles
+      # - name: Run tests
+      #   run: |
+      #     npm run test:unit
+      - name: Prepair publish
+        run: |
+          npm config set _authToken=${{ secrets.NPM_TOKEN }}
+          npm run build
+          npm run prepublish:copy
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd ./dist
+          npm publish --ignore-scripts
