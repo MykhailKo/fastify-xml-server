@@ -3,19 +3,25 @@ import rfdc from 'rfdc';
 const clone = rfdc();
 
 export function assignOneElementArrays(parentNode: Record<string, any>) {
-  for (const [key, value] of Object.entries(parentNode)) {
-    if (Array.isArray(value)) {
-      if (value.length === 1) {
-        if (typeof value[0] === 'object') assignOneElementArrays(value[0]);
-        parentNode[key] = value[0];
-      } else {
-        parentNode[key] = value.map((el: any) => {
-          if (typeof el === 'object') assignOneElementArrays(el);
-          return el;
-        });
+  const MAX_TREE_DEPTH = 30;
+  const assign = (parentNode: Record<string, any>, depth: number) => {
+    if (depth > MAX_TREE_DEPTH) throw new Error('Max tree depth exceeded.');
+    for (const [key, value] of Object.entries(parentNode)) {
+      if (Array.isArray(value)) {
+        if (value.length === 1) {
+          if (typeof value[0] === 'object') assign(value[0], ++depth);
+          parentNode[key] = value[0];
+        } else {
+          parentNode[key] = value.map((el: any) => {
+            if (typeof el === 'object') assign(el, ++depth);
+            return el;
+          });
+        }
       }
     }
-  }
+  };
+
+  assign(parentNode, 0);
 }
 
 export function addXmlWrapper(
