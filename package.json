@@ -16,7 +16,15 @@
     "name": "Mykhailo Kosiuk",
     "email": "mykhosit@gmail.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MykhailKo/verbose-time-travel.git"
+  },
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MykhailKo/verbose-time-travel/issues"
+  },
+  "homepage": "https://github.com/MykhailKo/verbose-time-travel#readme",
   "dependencies": {
     "@types/xml2js": "^0.4.14",
     "fastify": "^4.10.2",
