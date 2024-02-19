@@ -143,7 +143,7 @@ server.route({
   url: '/call',
   handler: async (req, rep) => {
     console.log(req.rawXml);
-    return rep.status(200).send({ ...(req.body as Record<string, any>) });
+    return rep.status(200).send(req.body['soapenv:Body']['soapenv:detail']);
   },
 });
 

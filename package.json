@@ -1,6 +1,6 @@
 {
   "name": "fastify-xml-server",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Fastify plugin which integrates xml2js and modifies your Fastify server to receive XML requests and send XML responses while still working with JSON data internally.",
   "main": "index.js",
   "scripts": {
@@ -18,13 +18,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MykhailKo/verbose-time-travel.git"
+    "url": "git+https://github.com/MykhailKo/fastify-xml-server.git"
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MykhailKo/verbose-time-travel/issues"
+    "url": "https://github.com/MykhailKo/fastify-xml-server/issues"
   },
-  "homepage": "https://github.com/MykhailKo/verbose-time-travel#readme",
+  "homepage": "https://github.com/MykhailKo/fastify-xml-server#readme",
   "dependencies": {
     "@types/xml2js": "^0.4.14",
     "fastify": "^4.10.2",
