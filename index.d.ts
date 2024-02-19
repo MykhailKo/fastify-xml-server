@@ -21,6 +21,6 @@ export function fastifyXmlServer(
 
 declare module 'fastify' {
   interface FastifyRequest {
-    rawXml: string;
+    rawXml?: string;
   }
 }

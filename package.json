@@ -1,6 +1,6 @@
 {
   "name": "fastify-xml-server",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Fastify plugin which integrates xml2js and modifies your Fastify server to receive XML requests and send XML responses while still working with JSON data internally.",
   "main": "index.js",
   "scripts": {
