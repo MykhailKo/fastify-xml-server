@@ -27,10 +27,11 @@ const plugin: FastifyPluginCallback<XmlServerOptions> = (
   const parser = new Parser(resOptions.parserOptions);
   const serializer = new Builder(resOptions.serializerOptions);
 
-  server.addHook('onRequest', (req, rep, done) => {
+  server.addHook('onRequest', (req, rep, next) => {
     if (!resOptions.contentType.includes(req.headers['content-type'] ?? '')) {
       rep.status(415).send('Unsupported Media Type');
     }
+    next();
   });
 
   server.addContentTypeParser(resOptions.contentType, { parseAs: 'string' }, (req, xmlPayload, next) => {
