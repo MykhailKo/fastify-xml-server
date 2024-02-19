@@ -3,10 +3,6 @@ import { FastifyPluginOptions, FastifyRequest } from 'fastify';
 
 export { BuilderOptions, ParserOptions } from 'xml2js';
 
-export interface FastifyRequstWithXml extends FastifyRequest {
-  rawXml: string;
-}
-
 export interface XmlServerOptions extends FastifyPluginOptions {
   parserOptions?: ParserOptions;
   serializerOptions?: BuilderOptions;
@@ -22,3 +18,9 @@ export function fastifyXmlServer(
   options: XmlServerOptions,
   done: (error?: FastifyError) => void
 ): void;
+
+declare module 'fastify' {
+  interface FastifyRequest {
+    rawXml: string;
+  }
+}
