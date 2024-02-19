@@ -128,11 +128,12 @@ export interface XmlServerOptions extends FastifyPluginOptions {
 
 In order to get access to the original XML request string in your request handler or custom hook functions set `propagateRawXml` property in options object to `true`.<br>
 After that is done the plugin will add the original XML into `rawXml` property of a Fastify request object.<br>
-With Typescript you might also need to use the exported `XmlPayload` interface and pass it as a type argument to `FastifyRequest` interface in order to avoid linter errors while trying to reference `rawXml` property.
+With Typescript you might also need to use the exported `FastifyRequstWithXml` interface in order to avoid linter errors while trying to reference `rawXml` property.<br>
+(At this moment there is still no good way of extending `FastifyRequest` interface without loosing type argument capabilities, the progress is tracked [here](https://github.com/fastify/help/issues/122)).
 
 ```typescript
 import fastify, { FastifyRequest } from 'fastify';
-import { fastifyXmlServer, XmlPayload } from 'fastify-xml-server';
+import { fastifyXmlServer, FastifyRequstWithXml } from 'fastify-xml-server';
 
 const server = fastify({ logger: true });
 
@@ -141,7 +142,7 @@ server.register(fastifyXmlServer, { propagateRawXml: true });
 server.route({
   method: 'POST',
   url: '/call',
-  handler: async (req: FastifyRequest<XmlPayload>, rep) => {
+  handler: async (req: FastifyRequstWithXml, rep) => {
     console.log(req.rawXml);
     return rep.status(200).send({ ...(req.body as Record<string, any>) });
   },

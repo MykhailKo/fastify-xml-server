@@ -1,10 +1,9 @@
 import { BuilderOptions, ParserOptions } from 'xml2js';
-import { FastifyPluginOptions } from 'fastify';
-import { ReplyGenericInterface } from 'fastify/types/reply';
+import { FastifyPluginOptions, FastifyRequest } from 'fastify';
 
 export { BuilderOptions, ParserOptions } from 'xml2js';
 
-export interface XmlPayload extends ReplyGenericInterface {
+export interface FastifyRequstWithXml extends FastifyRequest {
   rawXml: string;
 }
 
