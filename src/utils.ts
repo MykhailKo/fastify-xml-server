@@ -43,7 +43,7 @@ export function addXmlWrapper(
 
 export function errorTranslator(error: any): Record<string, any> {
   const httpStatus = error.statusCode || 500;
-  const errorCode = error.code || httpStatus >= 500 ? 'INTERNAL_ERROR' : 'BAD_REQUEST';
+  const errorCode = error.code || (httpStatus >= 500 ? 'INTERNAL_ERROR' : 'BAD_REQUEST');
 
   return {
     'env:Fault': {
