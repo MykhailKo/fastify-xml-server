@@ -27,6 +27,14 @@ const plugin: FastifyPluginCallback<XmlServerOptions> = (
   const parser = new Parser(resOptions.parserOptions);
   const serializer = new Builder(resOptions.serializerOptions);
 
+  server.setNotFoundHandler((req, rep) => {
+    const errorPayload = errorTranslator({ code: 'NOT_FOUND', message: 'URL path not found' });
+    const wrappedPayload = addXmlWrapper(errorPayload, resOptions.wrapper, ignoredXmlKeys);
+    const xmlPayload = serializer.buildObject(wrappedPayload);
+
+    rep.status(404).send(xmlPayload);
+  });
+
   server.addHook('onRequest', (req, rep, next) => {
     if (!resOptions.contentType.includes(req.headers['content-type'] ?? '')) {
       rep.status(415).send('Unsupported Media Type');

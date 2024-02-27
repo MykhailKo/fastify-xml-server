@@ -158,10 +158,11 @@ server.listen({ port: 3000 }, (err, address) => {
 
 If you are familiar with Fastify this section should be interesting and informative for you, but also shuold help to understand what is heppening under the hood of the plugin and potentially contribute improvements or debug problems.
 
-The plugin makes 5 modifications of your Fastify server instance:
+The plugin makes 6 modifications of your Fastify server instance:
 
-1. Sets `onRequest` hook which executes request `Content-Type` check and rejects unsupported media types.
-2. Sets custom request parser (using xml2js) for the configured list of xml content types with the `addContentTypeParser` method of a Fastify instance.
-3. Sets custom error handler function with the `setErrorHandler` method of a Fastify instance, which uses the specified `errorTranslator` in order to generate object representation of XML error response and serializes it into XML.
-4. Sets custom reply serializer with the `setReplySerializer` method of a Fastify instance, which uses xml2js Builder in order to serialize response object.
-5. Sets `onSend` hook which adds the specified `Content-Type` header to every response.
+1. Sets custom 404 error handler using `setNotFoundHandler` method of a Fastify instance, which generates error using `errorTranslator` passing not found error in it.
+2. Sets `onRequest` hook which executes request `Content-Type` check and rejects unsupported media types.
+3. Sets custom request parser (using xml2js) for the configured list of xml content types with the `addContentTypeParser` method of a Fastify instance.
+4. Sets custom error handler function with the `setErrorHandler` method of a Fastify instance, which uses the specified `errorTranslator` in order to generate object representation of XML error response and serializes it into XML.
+5. Sets custom reply serializer with the `setReplySerializer` method of a Fastify instance, which uses xml2js Builder in order to serialize response object.
+6. Sets `onSend` hook which adds the specified `Content-Type` header to every response.
