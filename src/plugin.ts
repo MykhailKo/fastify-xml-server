@@ -4,28 +4,34 @@ import { Builder, Parser } from 'xml2js';
 
 import { XmlServerOptions } from './types';
 import * as defaults from './defaults';
-import { addXmlWrapper, assignOneElementArrays, errorTranslator } from './utils';
+import { addXmlWrapper, assignOneElementArrays, errorTranslator, onDemandParser } from './utils';
+
+const defaultOptions: XmlServerOptions = {
+  parserOptions: { explicitRoot: false, ignoreAttrs: true },
+  serializerOptions: { renderOpts: { pretty: false } },
+  errorTranslator,
+  wrapper: defaults.wrapper,
+  contentType: ['application/xml', 'text/xml'],
+  assignOneElementArrays: true,
+  propagateRawXml: false,
+};
+
+const defaultParser = new Parser(defaultOptions.parserOptions);
+
+export let parseXml = onDemandParser(defaultOptions, defaultParser);
 
 const plugin: FastifyPluginCallback<XmlServerOptions> = (
   server: FastifyInstance,
   options: XmlServerOptions,
   done: (error?: FastifyError) => void
 ) => {
-  const defaultOptions: XmlServerOptions = {
-    parserOptions: { explicitRoot: false, ignoreAttrs: true },
-    serializerOptions: { renderOpts: { pretty: false } },
-    errorTranslator,
-    wrapper: defaults.wrapper,
-    contentType: ['application/xml', 'text/xml'],
-    assignOneElementArrays: true,
-    propagateRawXml: false,
-  };
-
   const resOptions = { ...defaultOptions, ...options } as Required<XmlServerOptions>;
   const ignoredXmlKeys = [options.serializerOptions?.attrkey ?? '$', options.parserOptions?.charkey ?? '_'];
 
   const parser = new Parser(resOptions.parserOptions);
   const serializer = new Builder(resOptions.serializerOptions);
+
+  parseXml = onDemandParser(resOptions, parser);
 
   server.setNotFoundHandler((req, rep) => {
     const errorPayload = errorTranslator({ code: 'NOT_FOUND', message: 'URL path not found' });

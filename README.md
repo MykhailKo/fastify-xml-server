@@ -154,11 +154,35 @@ server.listen({ port: 3000 }, (err, address) => {
 
 > **Note**: keep in mind that the original XML string might take up a considerable amount of memory.
 
+## Parse any xml on demand
+
+You can invoke the same xml parsing which is configured for your Fastify instance on demand at any point in code using `parseXml` function.<br>
+`parseXml` completely mimics the parsing logic you have configured for the Fastify plugin.<br>
+You can use this function even before the plugin is initialized, in this case it would behave according to the default configuration.
+
+The function takes one argument which is an xml string and one type argument which specifies a return type of the function, by default it is `Record<string, any>`.
+
+```typescript
+async function parseXml<T = Record<string, any>>(xml: string): Promise<T>;
+```
+
+Example usage:
+
+```typescript
+import { parseXml } from 'fastify-xml-server';
+
+const xml = '<env:Envelope><value>1</value></env:Envelope>';
+
+(async () => {
+  const json = await parseXml(xml);
+})();
+```
+
 ## Under the hood
 
 If you are familiar with Fastify this section should be interesting and informative for you, but also shuold help to understand what is heppening under the hood of the plugin and potentially contribute improvements or debug problems.
 
-The plugin makes 6 modifications of your Fastify server instance:
+&emsp;&emsp; The plugin makes 6 modifications of your Fastify server instance:
 
 1. Sets custom 404 error handler using `setNotFoundHandler` method of a Fastify instance, which generates error using `errorTranslator` passing not found error in it.
 2. Sets `onRequest` hook which executes request `Content-Type` check and rejects unsupported media types.

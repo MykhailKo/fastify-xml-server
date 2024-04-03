@@ -19,6 +19,8 @@ export function fastifyXmlServer(
   done: (error?: FastifyError) => void
 ): void;
 
+export async function parseXml<T = Record<string, any>>(xml: string): Promise<T>;
+
 declare module 'fastify' {
   interface FastifyRequest {
     rawXml?: string;
