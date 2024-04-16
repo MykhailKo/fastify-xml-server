@@ -42,7 +42,7 @@ const plugin: FastifyPluginCallback<XmlServerOptions> = (
   });
 
   server.addHook('onRequest', (req, rep, next) => {
-    if (!resOptions.contentType.includes(req.headers['content-type'] ?? '')) {
+    if (req.headers['content-type'] && !resOptions.contentType.includes(req.headers['content-type'])) {
       rep.status(415).send('Unsupported Media Type');
     }
     next();
