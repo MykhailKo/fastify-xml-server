@@ -9,6 +9,7 @@ _Contents_:
 - [Configuration](#configuration)
 - [Getting original XML in request object](#getting-original-xml-in-request-object)
 - [Under the hood](#under-the-hood)
+- [Parse any xml on demand](#parse-any-xml-on-demand)
 
 ## XML Server VS SOAP Server
 
@@ -185,7 +186,7 @@ If you are familiar with Fastify this section should be interesting and informat
 &emsp;&emsp; The plugin makes 6 modifications of your Fastify server instance:
 
 1. Sets custom 404 error handler using `setNotFoundHandler` method of a Fastify instance, which generates error using `errorTranslator` passing not found error in it.
-2. Sets `onRequest` hook which executes request `Content-Type` check and rejects unsupported media types.
+2. Sets `onRequest` hook which executes request `Content-Type` check and rejects unsupported media types (in case no `Content-Type` header is present the check passes).
 3. Sets custom request parser (using xml2js) for the configured list of xml content types with the `addContentTypeParser` method of a Fastify instance.
 4. Sets custom error handler function with the `setErrorHandler` method of a Fastify instance, which uses the specified `errorTranslator` in order to generate object representation of XML error response and serializes it into XML.
 5. Sets custom reply serializer with the `setReplySerializer` method of a Fastify instance, which uses xml2js Builder in order to serialize response object.
