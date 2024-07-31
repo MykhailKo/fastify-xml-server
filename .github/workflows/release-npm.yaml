@@ -26,7 +26,7 @@ jobs:
       #     npm run test:unit
       - name: Prepair publish
         run: |
-          npm config set _authToken=${{ secrets.NPM_TOKEN }}
+          npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
           npm run build
           npm run prepublish:copy
       - name: Publish
