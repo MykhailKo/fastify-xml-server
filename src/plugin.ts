@@ -4,7 +4,7 @@ import { Builder, Parser } from 'xml2js';
 
 import { XmlServerOptions } from './types';
 import * as defaults from './defaults';
-import { addXmlWrapper, assignOneElementArrays, errorTranslator, onDemandParser } from './utils';
+import { addXmlWrapper, assignOneElementArrays, dropNamespacePrefixes, errorTranslator, onDemandParser } from './utils';
 
 const defaultOptions: XmlServerOptions = {
   parserOptions: { explicitRoot: false, ignoreAttrs: true },
@@ -14,6 +14,7 @@ const defaultOptions: XmlServerOptions = {
   contentType: ['application/xml', 'text/xml'],
   assignOneElementArrays: true,
   propagateRawXml: false,
+  dropNamespacePrefixes: false,
 };
 
 const defaultParser = new Parser(defaultOptions.parserOptions);
@@ -42,7 +43,7 @@ const plugin: FastifyPluginCallback<XmlServerOptions> = (
   });
 
   server.addHook('onRequest', (req, rep, next) => {
-    if (!resOptions.contentType.includes(req.headers['content-type'] ?? '')) {
+    if (req.headers['content-type'] && !resOptions.contentType.includes(req.headers['content-type'])) {
       rep.status(415).send('Unsupported Media Type');
     }
     next();
@@ -53,6 +54,7 @@ const plugin: FastifyPluginCallback<XmlServerOptions> = (
     parser.parseString(xmlPayload, (err: any, json: Record<string, any>) => {
       if (err) next(err, null);
       if (resOptions.assignOneElementArrays) assignOneElementArrays(json);
+      if (resOptions.dropNamespacePrefixes) dropNamespacePrefixes(json);
       next(null, json);
     });
   });

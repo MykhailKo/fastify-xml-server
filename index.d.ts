@@ -11,6 +11,7 @@ export interface XmlServerOptions extends FastifyPluginOptions {
   contentType?: string[];
   assignOneElementArrays?: boolean;
   propagateRawXml?: boolean;
+  dropNamespacePrefixes?: boolean;
 }
 
 export function fastifyXmlServer(

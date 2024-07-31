@@ -5,8 +5,9 @@ import { XmlServerOptions } from '..';
 
 const clone = rfdc();
 
+const MAX_TREE_DEPTH = 30;
+
 export function assignOneElementArrays(parentNode: Record<string, any>) {
-  const MAX_TREE_DEPTH = 30;
   const assign = (parentNode: Record<string, any>, depth: number) => {
     if (depth > MAX_TREE_DEPTH) throw new Error('Max tree depth exceeded.');
     for (const [key, value] of Object.entries(parentNode)) {
@@ -25,6 +26,21 @@ export function assignOneElementArrays(parentNode: Record<string, any>) {
   };
 
   assign(parentNode, 0);
+}
+
+export function dropNamespacePrefixes(parentNode: Record<string, any>) {
+  const drop = (parentNode: Record<string, any>, depth: number) => {
+    if(depth > MAX_TREE_DEPTH) throw new Error('Max tree depth exceeded.')
+    for(const [key, value] of Object.entries(parentNode)) {
+      if(typeof value === 'object' && !Array.isArray(value)) drop(value, ++depth);
+      if(key.includes(':')) {
+        parentNode[key.split(':')[1]] = value;
+        delete parentNode[key]; 
+      }
+    }  
+  }
+
+  drop(parentNode, 0);
 }
 
 export function addXmlWrapper(

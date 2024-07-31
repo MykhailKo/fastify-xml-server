@@ -9,6 +9,7 @@ _Contents_:
 - [Configuration](#configuration)
 - [Getting original XML in request object](#getting-original-xml-in-request-object)
 - [Under the hood](#under-the-hood)
+- [Parse any xml on demand](#parse-any-xml-on-demand)
 
 ## XML Server VS SOAP Server
 
@@ -42,6 +43,7 @@ export interface XmlServerOptions extends FastifyPluginOptions {
   contentType?: string[];
   assignOneElementArrays?: boolean;
   propagateRawXml?: boolean;
+  dropNamespacePrefixes?: boolean;
 }
 ```
 
@@ -123,6 +125,13 @@ export interface XmlServerOptions extends FastifyPluginOptions {
   > **Note**: because `assignOneElementArrays` executes a recursive function on a JSON tree it is limited in depth to 30 to avoid denial of service caused by too deep recusrion.
 - `propagateRawXml` - if enabled adds `rawXml` property containing origninal XML string to Fastify request object making it available in a handler function.
   **default**: `false`
+- `dropNamespacePrefixes` - if enabled all XML namespace prefixes in tag names (keys of the parsed JSON) will be removed.
+  **default**: `false`
+
+  XML being an **extensible** format allows to specify any namespaces a user needs and then use those namespaces in tag names in order to distinguish some of them to a higher degree (see [XML namespaces](https://www.w3schools.com/xml/xml_namespaces.asp)).<br>
+  This means that theoretically different consumers of your API might be using different namespace prefixes for the same namespaces.<br>
+  For example there is a namespace for domain schemas of your API defined at http://xsd.org/domain and one consumer specifies it as `xmlns:domain="http://xsd.org/domain"` whereas another consumer specifies it as `xmlns:dmn="http://xsd.org/domain"` which means that tags of that namespace for those two consumers will look like `<domain:entity>` and `<dmn:entity>` respectively. From the XML perspective everything is consistent but when parsed to JSON this means that the keys of resulting JSON objects will be different for different requests since there is no concept of "key namespace" in JSON format. This fact may pose various problems like creating request schemas (in case of Fastify) or having some deterministic logic to process such request payloads at all.<br>
+  Therefore if your API uses some custom namespaces where there is a chance of different consumers using different namespace prefixes it is better to enable this option and the plugin will omit all of the namespace prefixes from JSON keys for you during request parsing allowing to have a static schema of JSON objects regardless of XML namespaces usage.
 
 ## Getting original XML in request object
 
@@ -185,7 +194,7 @@ If you are familiar with Fastify this section should be interesting and informat
 &emsp;&emsp; The plugin makes 6 modifications of your Fastify server instance:
 
 1. Sets custom 404 error handler using `setNotFoundHandler` method of a Fastify instance, which generates error using `errorTranslator` passing not found error in it.
-2. Sets `onRequest` hook which executes request `Content-Type` check and rejects unsupported media types.
+2. Sets `onRequest` hook which executes request `Content-Type` check and rejects unsupported media types (in case no `Content-Type` header is present the check passes).
 3. Sets custom request parser (using xml2js) for the configured list of xml content types with the `addContentTypeParser` method of a Fastify instance.
 4. Sets custom error handler function with the `setErrorHandler` method of a Fastify instance, which uses the specified `errorTranslator` in order to generate object representation of XML error response and serializes it into XML.
 5. Sets custom reply serializer with the `setReplySerializer` method of a Fastify instance, which uses xml2js Builder in order to serialize response object.
