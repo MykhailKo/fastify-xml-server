@@ -81,5 +81,6 @@ export const onDemandParser =
   async <T = Record<string, any>>(xml: string): Promise<T> => {
     const json = await parser.parseStringPromise(xml);
     if (options.assignOneElementArrays) assignOneElementArrays(json);
+    if (options.dropNamespacePrefixes) dropNamespacePrefixes(json);
     return json as T;
   };
