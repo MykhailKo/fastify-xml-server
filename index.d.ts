@@ -20,7 +20,14 @@ export function fastifyXmlServer(
   done: (error?: FastifyError) => void
 ): void;
 
-export async function parseXml<T = Record<string, any>>(xml: string): Promise<T>;
+export interface XmlParserOptions {
+  parserOptions?: ParserOptions;
+  wrapper?: Record<string, any>;
+  assignOneElementArrays?: boolean;
+  dropNamespacePrefixes?: boolean;
+}
+
+export async function parseXml<T = Record<string, any>>(xml: string, options?: XmlParserOptions): Promise<T>;
 
 declare module 'fastify' {
   interface FastifyRequest {
