@@ -11,3 +11,10 @@ export interface XmlServerOptions extends FastifyPluginOptions {
   propagateRawXml?: boolean;
   dropNamespacePrefixes?: boolean; 
 }
+
+export interface XmlParserOptions {
+  parserOptions?: ParserOptions;
+  wrapper?: Record<string, any>;
+  assignOneElementArrays?: boolean;
+  dropNamespacePrefixes?: boolean; 
+}

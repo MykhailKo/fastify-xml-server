@@ -1,7 +1,7 @@
 import rfdc from 'rfdc';
 import { Parser } from 'xml2js';
 
-import { XmlServerOptions } from '..';
+import { XmlServerOptions, XmlParserOptions } from './types'
 
 const clone = rfdc();
 
@@ -77,10 +77,11 @@ export function errorTranslator(error: any): Record<string, any> {
 }
 
 export const onDemandParser =
-  (options: XmlServerOptions, parser: Parser) =>
-  async <T = Record<string, any>>(xml: string): Promise<T> => {
+  (defaultOptions: XmlServerOptions, parser: Parser) =>
+  async <T = Record<string, any>>(xml: string, options?: XmlParserOptions): Promise<T> => {
+    const resOptions = { ...defaultOptions, ...options };
     const json = await parser.parseStringPromise(xml);
-    if (options.assignOneElementArrays) assignOneElementArrays(json);
-    if (options.dropNamespacePrefixes) dropNamespacePrefixes(json);
+    if (resOptions.assignOneElementArrays) assignOneElementArrays(json);
+    if (resOptions.dropNamespacePrefixes) dropNamespacePrefixes(json);
     return json as T;
   };

@@ -167,12 +167,23 @@ server.listen({ port: 3000 }, (err, address) => {
 
 You can invoke the same xml parsing which is configured for your Fastify instance on demand at any point in code using `parseXml` function.<br>
 `parseXml` completely mimics the parsing logic you have configured for the Fastify plugin.<br>
+However it is also possible to override some of the parsing logic by passing an optional configuration object of interface `XmlParserOptions` to `parseXml` which consists of a subset of `XmlServerOptions` parameters related to parsing logic.<br>
+
+```typescript
+export interface XmlParserOptions {
+  parserOptions?: ParserOptions;
+  wrapper?: Record<string, any>;
+  assignOneElementArrays?: boolean;
+  dropNamespacePrefixes?: boolean;
+}
+```
+
 You can use this function even before the plugin is initialized, in this case it would behave according to the default configuration.
 
 The function takes one argument which is an xml string and one type argument which specifies a return type of the function, by default it is `Record<string, any>`.
 
 ```typescript
-async function parseXml<T = Record<string, any>>(xml: string): Promise<T>;
+async function parseXml<T = Record<string, any>>(xml: string, options?: XmlParserOptions): Promise<T>;
 ```
 
 Example usage:
