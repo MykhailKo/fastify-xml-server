@@ -80,8 +80,20 @@ export interface XmlServerOptions extends FastifyPluginOptions {
   ```
   > **Note**: wrapper object is serialized using the same xml2js builder therefore you should use xml2js syntax for specifing attributes etc.
 - `contentType` - list of supported HTTP content types.<br>
+
   **default:** `['application/xml', 'text/xml']`
+
   > **Note**: first element from the list is used to set `Content-Type` header on responses, all values represent supported request content types.
+
+  It is possible that some clients might pass additional parameters in the `Content-Type` header such as `charset`. The behavior of the plugin in such cases in the following:
+
+  - in case the type only part from the `Content-Type` header (ignoring parameters) is in the `contentType` list it is considered supported;
+  - otherwise it is considered supported only if the `contentType` list contains the exact match with all parameters.
+
+  In other words if specific parameters are not of much importance (which should be true for most use cases) - specifing a content type without parameters in the list would automatically support all of the parametrized variations of that type.<br>
+  For example `contentType` set to `['application/xml']` would implicitly support `application/xml;charset=utf-8`, `application/xml;charset="utf-8"`, `application/xml;charset=utf-16` etc.<br>
+  However if you need to accept only certain parametrized content types - just specify those explicitly in the `contentType` array.
+
 - `assignOneElementArrays` - xml2js parser always outputs all child elements as arrays, even in cases there the child of an element is a string value or there is just one child, this flag allows to improve this output by assigning all arrays with one element and all arrays with element values as values to their parent keys dropping the array syntax (which makes it much more operable, see example)<br>
   **default:** `true`<br>
   **Example**:<br>

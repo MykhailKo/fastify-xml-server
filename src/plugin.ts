@@ -4,7 +4,7 @@ import { Builder, Parser } from 'xml2js';
 
 import { XmlServerOptions } from './types';
 import * as defaults from './defaults';
-import { addXmlWrapper, assignOneElementArrays, dropNamespacePrefixes, errorTranslator, onDemandParser } from './utils';
+import { addXmlWrapper, assignOneElementArrays, checkContentTypeSupport, dropNamespacePrefixes, errorTranslator, onDemandParser } from './utils';
 
 const defaultOptions: XmlServerOptions = {
   parserOptions: { explicitRoot: false, ignoreAttrs: true },
@@ -43,7 +43,7 @@ const plugin: FastifyPluginCallback<XmlServerOptions> = (
   });
 
   server.addHook('onRequest', (req, rep, next) => {
-    if (req.headers['content-type'] && !resOptions.contentType.includes(req.headers['content-type'])) {
+    if (req.headers['content-type'] && !checkContentTypeSupport(req.headers['content-type'], resOptions.contentType)) {
       rep.status(415).send('Unsupported Media Type');
     }
     next();

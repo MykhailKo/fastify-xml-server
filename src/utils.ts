@@ -76,6 +76,12 @@ export function errorTranslator(error: any): Record<string, any> {
   };
 }
 
+export function checkContentTypeSupport(contentType: string, supportedList: string[]): boolean {
+  const typeOnly = contentType.split(';')[0];
+  if(supportedList.includes(typeOnly)) return true;
+  return supportedList.includes(contentType);
+}
+
 export const onDemandParser =
   (defaultOptions: XmlServerOptions, parser: Parser) =>
   async <T = Record<string, any>>(xml: string, options?: XmlParserOptions): Promise<T> => {
@@ -85,3 +91,4 @@ export const onDemandParser =
     if (resOptions.dropNamespacePrefixes) dropNamespacePrefixes(json);
     return json as T;
   };
+
