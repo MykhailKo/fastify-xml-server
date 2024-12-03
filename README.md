@@ -175,15 +175,15 @@ server.listen({ port: 3000 }, (err, address) => {
 
 > **Note**: keep in mind that the original XML string might take up a considerable amount of memory.
 
-## Parse any xml on demand
+## Parse or build any xml on demand
 
-You can invoke the same xml parsing which is configured for your Fastify instance on demand at any point in code using `parseXml` function.<br>
+You can invoke the same xml parsing or building logic which is configured for your Fastify instance on demand at any point in code using `parseXml` and `buildXml` functions respectively.<br>
+
 `parseXml` completely mimics the parsing logic you have configured for the Fastify plugin.<br>
 However it is also possible to override some of the parsing logic by passing an optional configuration object of interface `XmlParserOptions` to `parseXml` which consists of a subset of `XmlServerOptions` parameters related to parsing logic.<br>
 
 ```typescript
 export interface XmlParserOptions {
-  parserOptions?: ParserOptions;
   wrapper?: Record<string, any>;
   assignOneElementArrays?: boolean;
   dropNamespacePrefixes?: boolean;
@@ -208,6 +208,23 @@ const xml = '<env:Envelope><value>1</value></env:Envelope>';
 (async () => {
   const json = await parseXml(xml);
 })();
+```
+
+`buildXml` completely mimics the XML building logic which used to serialize XML responses in the Fastify plugin.<br>
+It is similarly possible to override some of the parameters by passing an optional configuration object of interface `XmlBuilderOptions` which of a subset of `XmlServerOptions` parameters related to serialization logic:
+
+```typescript
+export interface XmlBuilderOptions {
+  wrapper?: Record<string, any>;
+}
+```
+
+You can use this function even before the plugin is initialized, in this case it would behave according to the default configuration.
+
+The function takes one argument which is a json object and one optional type argument which specifies the type of that json, by default it is `Record<string, any>`. It returns an xml string.
+
+```typescript
+export function buildXml<T = Record<string, any>>(json: T, options?: XmlBuilderOptions): string;
 ```
 
 ## Under the hood

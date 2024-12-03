@@ -21,13 +21,16 @@ export function fastifyXmlServer(
 ): void;
 
 export interface XmlParserOptions {
-  parserOptions?: ParserOptions;
-  wrapper?: Record<string, any>;
   assignOneElementArrays?: boolean;
   dropNamespacePrefixes?: boolean;
 }
 
+export interface XmlBuilderOptions {
+  wrapper?: Record<string, any>;
+}
+
 export async function parseXml<T = Record<string, any>>(xml: string, options?: XmlParserOptions): Promise<T>;
+export function buildXml<T = Record<string, any>>(json: T, options?: XmlBuilderOptions): string;
 
 declare module 'fastify' {
   interface FastifyRequest {
