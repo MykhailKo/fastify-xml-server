@@ -4,7 +4,7 @@ import { Builder, Parser } from 'xml2js';
 
 import { XmlServerOptions } from './types';
 import * as defaults from './defaults';
-import { addXmlWrapper, assignOneElementArrays, checkContentTypeSupport, dropNamespacePrefixes, errorTranslator, onDemandParser } from './utils';
+import { addXmlWrapper, assignOneElementArrays, checkContentTypeSupport, dropNamespacePrefixes, errorTranslator, onDemandParser, onDemansBuilder } from './utils';
 
 const defaultOptions: XmlServerOptions = {
   parserOptions: { explicitRoot: false, ignoreAttrs: true },
@@ -18,8 +18,10 @@ const defaultOptions: XmlServerOptions = {
 };
 
 const defaultParser = new Parser(defaultOptions.parserOptions);
+const defaultBuilder = new Builder(defaultOptions.serializerOptions);
 
 export let parseXml = onDemandParser(defaultOptions, defaultParser);
+export let buildXml = onDemansBuilder(defaultOptions, ['$', '_'], defaultBuilder);
 
 const plugin: FastifyPluginCallback<XmlServerOptions> = (
   server: FastifyInstance,
@@ -33,6 +35,7 @@ const plugin: FastifyPluginCallback<XmlServerOptions> = (
   const serializer = new Builder(resOptions.serializerOptions);
 
   parseXml = onDemandParser(resOptions, parser);
+  buildXml = onDemansBuilder(resOptions, ignoredXmlKeys, serializer);
 
   server.setNotFoundHandler((req, rep) => {
     const errorPayload = errorTranslator({ code: 'NOT_FOUND', message: 'URL path not found' });

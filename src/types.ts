@@ -13,8 +13,10 @@ export interface XmlServerOptions extends FastifyPluginOptions {
 }
 
 export interface XmlParserOptions {
-  parserOptions?: ParserOptions;
-  wrapper?: Record<string, any>;
   assignOneElementArrays?: boolean;
   dropNamespacePrefixes?: boolean; 
+}
+
+export interface XmlBuilderOptions {
+  wrapper?: Record<string, any>;
 }

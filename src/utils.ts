@@ -1,7 +1,7 @@
 import rfdc from 'rfdc';
-import { Parser } from 'xml2js';
+import { Parser, Builder } from 'xml2js';
 
-import { XmlServerOptions, XmlParserOptions } from './types'
+import { XmlServerOptions, XmlParserOptions, XmlBuilderOptions } from './types'
 
 const clone = rfdc();
 
@@ -92,3 +92,10 @@ export const onDemandParser =
     return json as T;
   };
 
+export const onDemansBuilder = (defaultOptions: XmlServerOptions, ignoredXmlKeys: string[], builder: Builder) => 
+  <T = Record<string, any>>(json: T, options?: XmlBuilderOptions): string => {
+    const resOptions = {...defaultOptions, options};
+    const wrapped = addXmlWrapper(<Record<string, any>>json, <Record<string, any>>resOptions.wrapper, ignoredXmlKeys); 
+    const xml = builder.buildObject(wrapped);
+    return xml;
+  };
