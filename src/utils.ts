@@ -21,6 +21,8 @@ export function assignOneElementArrays(parentNode: Record<string, any>) {
             return el;
           });
         }
+      } else {
+        if(typeof value === 'object') assign(value, ++depth);
       }
     }
   };
