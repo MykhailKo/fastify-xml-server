@@ -96,9 +96,9 @@ export const onDemandParser =
 
 export const onDemansBuilder = (defaultOptions: XmlServerOptions, ignoredXmlKeys: string[], builder: Builder) => 
   <T = Record<string, any>>(json: T, options?: XmlBuilderOptions): string => {
-    const resOptions = {...defaultOptions, options};
+    const resOptions = {...defaultOptions, ...options};
     if(options?.serializerOptions) builder = new Builder(options.serializerOptions);
-    
+
     const wrapped = addXmlWrapper(<Record<string, any>>json, <Record<string, any>>resOptions.wrapper, ignoredXmlKeys); 
     const xml = builder.buildObject(wrapped);
     return xml;
