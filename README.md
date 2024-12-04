@@ -9,7 +9,7 @@ _Contents_:
 - [Configuration](#configuration)
 - [Getting original XML in request object](#getting-original-xml-in-request-object)
 - [Under the hood](#under-the-hood)
-- [Parse any xml on demand](#parse-any-xml-on-demand)
+- [Parse or build any xml on demand](#parse-or-build-any-xml-on-demand)
 
 ## XML Server VS SOAP Server
 
@@ -184,6 +184,7 @@ However it is also possible to override some of the parsing logic by passing an 
 
 ```typescript
 export interface XmlParserOptions {
+  parserOptions?: ParserOptions;
   wrapper?: Record<string, any>;
   assignOneElementArrays?: boolean;
   dropNamespacePrefixes?: boolean;
@@ -215,6 +216,7 @@ It is similarly possible to override some of the parameters by passing an option
 
 ```typescript
 export interface XmlBuilderOptions {
+  serializerOptions?: BuilderOptions;
   wrapper?: Record<string, any>;
 }
 ```

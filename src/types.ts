@@ -13,10 +13,12 @@ export interface XmlServerOptions extends FastifyPluginOptions {
 }
 
 export interface XmlParserOptions {
+  parserOptions?: ParserOptions;
   assignOneElementArrays?: boolean;
   dropNamespacePrefixes?: boolean; 
 }
 
 export interface XmlBuilderOptions {
+  serializerOptions?: BuilderOptions;
   wrapper?: Record<string, any>;
 }

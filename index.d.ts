@@ -21,11 +21,13 @@ export function fastifyXmlServer(
 ): void;
 
 export interface XmlParserOptions {
+  parserOptions?: ParserOptions;
   assignOneElementArrays?: boolean;
   dropNamespacePrefixes?: boolean;
 }
 
 export interface XmlBuilderOptions {
+  serializerOptions?: BuilderOptions;
   wrapper?: Record<string, any>;
 }
 
