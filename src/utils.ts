@@ -88,9 +88,9 @@ export const onDemandParser =
   (defaultOptions: XmlServerOptions, parser: Parser) =>
   async <T = Record<string, any>>(xml: string, options?: XmlParserOptions): Promise<T> => {
     const resOptions = { ...defaultOptions, ...options };
-    if(options?.parserOptions) parser = new Parser(options.parserOptions);
+    const resParser = options?.parserOptions ? new Parser(options.parserOptions) : parser;
 
-    const json = await parser.parseStringPromise(xml);
+    const json = await resParser.parseStringPromise(xml);
     if (resOptions.assignOneElementArrays) assignOneElementArrays(json);
     if (resOptions.dropNamespacePrefixes) dropNamespacePrefixes(json);
     return json as T;
@@ -99,9 +99,9 @@ export const onDemandParser =
 export const onDemansBuilder = (defaultOptions: XmlServerOptions, ignoredXmlKeys: string[], builder: Builder) => 
   <T = Record<string, any>>(json: T, options?: XmlBuilderOptions): string => {
     const resOptions = {...defaultOptions, ...options};
-    if(options?.serializerOptions) builder = new Builder(options.serializerOptions);
+    const resBuilder = options?.serializerOptions ? new Builder(options.serializerOptions) : builder;
 
     const wrapped = addXmlWrapper(<Record<string, any>>json, <Record<string, any>>resOptions.wrapper, ignoredXmlKeys); 
-    const xml = builder.buildObject(wrapped);
+    const xml = resBuilder.buildObject(wrapped);
     return xml;
   };
