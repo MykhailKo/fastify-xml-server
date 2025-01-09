@@ -96,7 +96,7 @@ export interface XmlServerOptions extends FastifyPluginOptions {
   However if you need to accept only certain parametrized content types - just specify those explicitly in the `contentType` array.
 
 - `maxXmlTreeDepth` - sets the limit for recursion depth over the XML tree during parsing.<br>
-  **default:** `30`
+  **default:** `500`
 
 - `assignOneElementArrays` - xml2js parser always outputs all child elements as arrays, even in cases there the child of an element is a string value or there is just one child, this flag allows to improve this output by assigning all arrays with one element and all arrays with element values as values to their parent keys dropping the array syntax (which makes it much more operable, see example)<br>
   **default:** `true`<br>

@@ -12,7 +12,7 @@ const defaultOptions: XmlServerOptions = {
   errorTranslator,
   wrapper: defaults.wrapper,
   contentType: ['application/xml', 'text/xml'],
-  maxXmlTreeDepth: 30,
+  maxXmlTreeDepth: 500,
   assignOneElementArrays: true,
   propagateRawXml: false,
   dropNamespacePrefixes: false,
