@@ -9,6 +9,7 @@ export interface XmlServerOptions extends FastifyPluginOptions {
   errorTranslator?: (error: any) => Record<string, any>;
   wrapper?: Record<string, any>;
   contentType?: string[];
+  maxXmlTreeDepth?: number;
   assignOneElementArrays?: boolean;
   propagateRawXml?: boolean;
   dropNamespacePrefixes?: boolean;
@@ -22,6 +23,7 @@ export function fastifyXmlServer(
 
 export interface XmlParserOptions {
   parserOptions?: ParserOptions;
+  maxXmlTreeDepth?: number;
   assignOneElementArrays?: boolean;
   dropNamespacePrefixes?: boolean;
 }

@@ -5,19 +5,18 @@ import { XmlServerOptions, XmlParserOptions, XmlBuilderOptions } from './types'
 
 const clone = rfdc();
 
-const MAX_TREE_DEPTH = 30;
-
-export function assignOneElementArrays(parentNode: Record<string, any>) {
+export function assignOneElementArrays(parentNode: Record<string, any>, max_tree_depth: number) {
   const assign = (parentNode: Record<string, any>, depth: number) => {
-    if (depth > MAX_TREE_DEPTH) throw new Error('Max tree depth exceeded.');
+    if (depth > max_tree_depth) throw new Error('Max tree depth exceeded.');
     for (const [key, value] of Object.entries(parentNode)) {
       if (Array.isArray(value)) {
         if (value.length === 1) {
           if (typeof value[0] === 'object') assign(value[0], ++depth);
           parentNode[key] = value[0];
         } else {
+          const nextDepth = depth + 1;
           parentNode[key] = value.map((el: any) => {
-            if (typeof el === 'object') assign(el, ++depth);
+            if (typeof el === 'object') assign(el, nextDepth);
             return el;
           });
         }
@@ -30,9 +29,9 @@ export function assignOneElementArrays(parentNode: Record<string, any>) {
   assign(parentNode, 0);
 }
 
-export function dropNamespacePrefixes(parentNode: Record<string, any>) {
+export function dropNamespacePrefixes(parentNode: Record<string, any>, max_tree_depth: number) {
   const drop = (parentNode: Record<string, any>, depth: number) => {
-    if(depth > MAX_TREE_DEPTH) throw new Error('Max tree depth exceeded.')
+    if(depth > max_tree_depth) throw new Error('Max tree depth exceeded.')
     for(const [key, value] of Object.entries(parentNode)) {
       if(typeof value === 'object' && !Array.isArray(value)) drop(value, ++depth);
       if(key.includes(':')) {
@@ -91,8 +90,8 @@ export const onDemandParser =
     const resParser = options?.parserOptions ? new Parser(options.parserOptions) : parser;
 
     const json = await resParser.parseStringPromise(xml);
-    if (resOptions.assignOneElementArrays) assignOneElementArrays(json);
-    if (resOptions.dropNamespacePrefixes) dropNamespacePrefixes(json);
+    if (resOptions.assignOneElementArrays) assignOneElementArrays(json, resOptions.maxXmlTreeDepth as number);
+    if (resOptions.dropNamespacePrefixes) dropNamespacePrefixes(json, resOptions.maxXmlTreeDepth as number);
     return json as T;
   };
 

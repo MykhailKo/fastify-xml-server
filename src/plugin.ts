@@ -12,6 +12,7 @@ const defaultOptions: XmlServerOptions = {
   errorTranslator,
   wrapper: defaults.wrapper,
   contentType: ['application/xml', 'text/xml'],
+  maxXmlTreeDepth: 30,
   assignOneElementArrays: true,
   propagateRawXml: false,
   dropNamespacePrefixes: false,
@@ -56,8 +57,8 @@ const plugin: FastifyPluginCallback<XmlServerOptions> = (
     if (resOptions.propagateRawXml) Object.assign(req, { rawXml: xmlPayload });
     parser.parseString(xmlPayload, (err: any, json: Record<string, any>) => {
       if (err) next(err, null);
-      if (resOptions.assignOneElementArrays) assignOneElementArrays(json);
-      if (resOptions.dropNamespacePrefixes) dropNamespacePrefixes(json);
+      if (resOptions.assignOneElementArrays) assignOneElementArrays(json, resOptions.maxXmlTreeDepth);
+      if (resOptions.dropNamespacePrefixes) dropNamespacePrefixes(json, resOptions.maxXmlTreeDepth);
       next(null, json);
     });
   });
