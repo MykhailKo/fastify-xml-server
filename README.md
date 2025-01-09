@@ -41,6 +41,7 @@ export interface XmlServerOptions extends FastifyPluginOptions {
   errorTranslator?: (error: any) => Record<string, any>;
   wrapper?: Record<string, any>;
   contentType?: string[];
+  maxXmlTreeDepth?: number;
   assignOneElementArrays?: boolean;
   propagateRawXml?: boolean;
   dropNamespacePrefixes?: boolean;
@@ -94,6 +95,9 @@ export interface XmlServerOptions extends FastifyPluginOptions {
   For example `contentType` set to `['application/xml']` would implicitly support `application/xml;charset=utf-8`, `application/xml;charset="utf-8"`, `application/xml;charset=utf-16` etc.<br>
   However if you need to accept only certain parametrized content types - just specify those explicitly in the `contentType` array.
 
+- `maxXmlTreeDepth` - sets the limit for recursion depth over the XML tree during parsing.<br>
+  **default:** `500`
+
 - `assignOneElementArrays` - xml2js parser always outputs all child elements as arrays, even in cases there the child of an element is a string value or there is just one child, this flag allows to improve this output by assigning all arrays with one element and all arrays with element values as values to their parent keys dropping the array syntax (which makes it much more operable, see example)<br>
   **default:** `true`<br>
   **Example**:<br>
@@ -134,7 +138,7 @@ export interface XmlServerOptions extends FastifyPluginOptions {
     }
   }
   ```
-  > **Note**: because `assignOneElementArrays` executes a recursive function on a JSON tree it is limited in depth to 30 to avoid denial of service caused by too deep recusrion.
+  > **Note**: because `assignOneElementArrays` executes a recursive function on a JSON tree it is limited in depth by `maxXmlTreeDepth` field in the config to avoid long running operations caused by too deep recusrion.
 - `propagateRawXml` - if enabled adds `rawXml` property containing origninal XML string to Fastify request object making it available in a handler function.
   **default**: `false`
 - `dropNamespacePrefixes` - if enabled all XML namespace prefixes in tag names (keys of the parsed JSON) will be removed.
