@@ -75,6 +75,7 @@ const plugin: FastifyPluginCallback<XmlServerOptions> = (
   });
 
   server.setReplySerializer((payload, statusCode) => {
+    if(typeof payload == 'string') return payload;
     const wrappedPayload = addXmlWrapper(payload as Record<string, any>, resOptions.wrapper, ignoredXmlKeys);
     const xmlPayload = serializer.buildObject(wrappedPayload);
     return xmlPayload;
